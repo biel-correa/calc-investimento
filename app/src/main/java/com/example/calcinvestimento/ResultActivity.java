@@ -11,6 +11,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import java.sql.Timestamp;
 import java.time.Duration;
+import java.time.Instant;
 
 public class ResultActivity extends AppCompatActivity {
 
@@ -29,18 +30,60 @@ public class ResultActivity extends AppCompatActivity {
             return insets;
         });
 
+        this.listenToBackButton();
+
         final double amountInvested = getIntent().getDoubleExtra("amount", 0);
-        final long endDate = getIntent().getLongExtra("date", 0);
+        final Timestamp endDate = new Timestamp(getIntent().getLongExtra("date", 0));
+        final Duration duration = getDuration(endDate);
 
-        final double amountReceived = calculateAmountReceived(amountInvested, endDate);
+        final double amountReceived = calculateAmountReceived(amountInvested, duration);
+        final double taxRate = getTaxRate(duration);
+        final double tax = amountReceived * taxRate;
 
-        TextView resultText = findViewById(R.id.result);
-        resultText.setText(String.format("R$ %.2f", amountReceived));
+        setText(R.id.result, String.format("R$ %.2f", amountReceived + amountInvested));
+        setText(R.id.totalEarnings, String.format("R$ %.2f", amountReceived));
+        setText(R.id.initialValue, String.format("R$ %.2f", amountInvested));
+        setText(R.id.grossValue, String.format("R$ %.2f", amountReceived + amountInvested));
+        setText(R.id.earningsValue, String.format("R$ %.2f", amountReceived));
+        setText(R.id.irValue, String.format("R$ %.2f(%.2f%%)", tax, taxRate * 100));
+        setText(R.id.netValue, String.format("R$ %.2f", amountReceived + amountInvested - tax));
+        setText(R.id.redeemDate, endDate.toString().substring(8, 10) + "/" + endDate.toString().substring(5, 7) + "/" + endDate.toString().substring(0, 4));
+        setText(R.id.daysElapsed, String.valueOf(duration.toDays()));
     }
 
-    private double calculateAmountReceived(double amountInvested, long endDate) {
-        final Timestamp startDate = new Timestamp(System.currentTimeMillis());
-        final Timestamp endTimestamp = new Timestamp(endDate);
-        final Duration duration = Duration.between(startDate.toInstant(), endTimestamp.toInstant());
+    private void listenToBackButton() {
+        findViewById(R.id.back).setOnClickListener(v -> {
+            finish();
+        });
+    }
+
+    private Duration getDuration(Timestamp endDate) {
+        final Instant startDate = new Timestamp(System.currentTimeMillis()).toInstant();
+        return Duration.between(startDate, endDate.toInstant());
+    }
+
+    private double getTaxRate(Duration duration) {
+        final long days = duration.toDays();
+
+        if (days <= 180) {
+            return 0.175;
+        } else if (days <= 360) {
+            return 0.15;
+        } else if (days <= 720) {
+            return 0.1;
+        }
+
+        return 0.05;
+    }
+
+    private void setText(int id, String text) {
+        TextView textView = findViewById(id);
+        textView.setText(text);
+    }
+
+    private double calculateAmountReceived(double amountInvested, Duration duration) {
+        double years = duration.toDays() / 365.0;
+        double annualRate = 0.105;
+        return (amountInvested * Math.pow(1 + annualRate, years)) - amountInvested;
     }
 }

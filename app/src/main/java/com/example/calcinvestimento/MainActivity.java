@@ -13,11 +13,12 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
-    private long selectedDate;
+    private Timestamp selectedDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private void listenToCalendarChanges() {
         CalendarView calendarInput = findViewById(R.id.calendarInput);
         calendarInput.setOnDateChangeListener((CalendarView view, int year, int month, int dayOfMonth) -> {
-            selectedDate = new Date(year, month, dayOfMonth).getTime();
+            selectedDate = new Timestamp(new Date(year - 1900, month, dayOfMonth).getTime());
         });
     }
 
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
 
             Intent intent = new Intent(this, ResultActivity.class);
             intent.putExtra("amount", amount);
-            intent.putExtra("date", selectedDate);
+            intent.putExtra("date", selectedDate.getTime());
             startActivity(intent);
         });
     }
