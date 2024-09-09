@@ -71,6 +71,12 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
+            if (selectedDate == null) {
+                errorText.setText("Selecione uma data.");
+                errorText.setVisibility(TextView.VISIBLE);
+                return;
+            }
+
             double amount = Double.parseDouble(amountInput.getText().toString());
             double cdiPercentage = Double.parseDouble(cdiPercentageInput.getText().toString());
 
