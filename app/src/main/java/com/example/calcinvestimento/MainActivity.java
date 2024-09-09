@@ -14,7 +14,6 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import java.sql.Timestamp;
-import java.util.Calendar;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,6 +23,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
+
+        try {
+            getSupportActionBar().hide();
+        } catch (NullPointerException ignored) {}
+
         setContentView(R.layout.activity_main);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -60,10 +64,19 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
 
+            EditText cdiPercentageInput = findViewById(R.id.cdiPercentage);
+            if (cdiPercentageInput.getText().toString().isEmpty()) {
+                errorText.setText("O campo 'Porcentagem do CDI' é obrigatório.");
+                errorText.setVisibility(TextView.VISIBLE);
+                return;
+            }
+
             double amount = Double.parseDouble(amountInput.getText().toString());
+            double cdiPercentage = Double.parseDouble(cdiPercentageInput.getText().toString());
 
             Intent intent = new Intent(this, ResultActivity.class);
             intent.putExtra("amount", amount);
+            intent.putExtra("cdiPercentage", cdiPercentage);
             intent.putExtra("date", selectedDate.getTime());
             startActivity(intent);
         });

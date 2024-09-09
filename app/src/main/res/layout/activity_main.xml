@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
@@ -36,6 +37,20 @@
         android:layout_marginBottom="20dp" />
 
     <TextView
+        android:id="@+id/textView3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Qual a porcentagem do CDI do investimento?" />
+
+    <EditText
+        android:id="@+id/cdiPercentage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        android:hint="100%"
+        android:inputType="number|numberDecimal" />
+
+    <TextView
         android:id="@+id/errorText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -50,6 +65,8 @@
         android:id="@+id/submit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Calcular"/>
+        android:backgroundTint="#5AC5B3"
+        android:text="Calcular"
+        app:cornerRadius="30dp" />
 
 </LinearLayout>
