@@ -100,7 +100,7 @@ public class ResultActivity extends AppCompatActivity {
     }
 
     private double calculateAmountReceived(double amountInvested, Duration duration, double cdiPercentage) {
-        double years = duration.toDays() / 365.0;
+        double years = duration.toDays() / 252.0;
         double annualRate = 0.105 * (cdiPercentage / 100);
         return (amountInvested * Math.pow(1 + annualRate, years)) - amountInvested;
     }
